@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Q-FLOW</title>
+    <title>Q-Flow Pro v8 (Stable)</title>
     
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -37,6 +38,7 @@
         .btn:active { transform: scale(0.97); }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); }
         .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: #fee2e2; color: var(--danger); }
         .btn-ghost { background: transparent; color: var(--text); border: 1px solid #d1d5db; box-shadow: none; }
 
         input { padding: 16px; border-radius: 12px; border: 2px solid #e5e7eb; width: 100%; outline: none; transition: 0.2s; font-size: 1rem; background: #f9fafb; text-align: center; }
@@ -49,7 +51,7 @@
         .role-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; }
 
         /* DISPLAY */
-        #display-ui { display: grid; grid-template-columns: 2fr 1fr; height: 100%; }
+        #display-ui { display: grid; grid-template-columns: 2fr 1fr; height: 100%; grid-template-rows: 1fr auto; }
         .queue-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border-right: 1px solid #e5e7eb; position: relative; padding: 20px; }
         .token-huge { font-size: clamp(6rem, 20vw, 16rem); font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: -4px; }
         .counter-label { font-size: clamp(1.5rem, 4vw, 3rem); color: #6b7280; font-weight: 600; margin-top: 1rem; }
@@ -59,6 +61,11 @@
         .join-zone { background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
         .qr-container { background: white; padding: 15px; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 25px; }
         .qr-container img { display: block; max-width: 100%; }
+
+        /* NEW: MARQUEE MESSAGE BAR */
+        #marquee-bar { grid-column: 1 / -1; background: #1e293b; color: white; padding: 10px 0; overflow: hidden; white-space: nowrap; display: none; }
+        .scrolling-text { display: inline-block; padding-left: 100%; animation: scroll 15s linear infinite; font-size: 1.5rem; font-weight: 600; }
+        @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
         /* CUSTOMER */
         .mobile-card { background: white; border-radius: 30px; padding: 2rem; width: 90%; max-width: 400px; text-align: center; box-shadow: var(--shadow); position: relative; margin: auto; }
@@ -78,7 +85,7 @@
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            #display-ui { grid-template-columns: 1fr; grid-template-rows: 2fr 1fr; }
+            #display-ui { grid-template-columns: 1fr; grid-template-rows: 2fr 1fr auto; }
             .queue-zone { border-right: none; border-bottom: 1px solid #e5e7eb; }
             .join-zone { flex-direction: row; justify-content: space-around; padding: 15px; }
             .qr-container { transform: scale(0.8); margin-bottom: 0; }
@@ -127,6 +134,8 @@
             </div>
             <button id="audio-btn" class="btn btn-primary" onclick="enableAudio()" style="position:absolute; bottom:20px; font-size: 0.8rem;">🔊 Enable Sound</button>
         </div>
+
+        <div id="marquee-bar"><div class="scrolling-text" id="marquee-text">Welcome to Q-Flow Pro</div></div>
     </main>
 
     <main id="customer-ui" class="full-screen flex-center hidden" style="background: #eef2ff;">
@@ -177,14 +186,8 @@
                 <div id="admin-sec-box" class="hidden">Code: <b id="admin-sec-code">----</b></div>
                 
                 <div class="stat-grid">
-                    <div class="stat-item">
-                        <h4 id="stat-served">0</h4>
-                        <p>Total Served</p>
-                    </div>
-                    <div class="stat-item">
-                        <h4 id="stat-avg">0m</h4>
-                        <p>Avg Time</p>
-                    </div>
+                    <div class="stat-item"><h4 id="stat-served">0</h4><p>Total Served</p></div>
+                    <div class="stat-item"><h4 id="stat-avg">0m</h4><p>Avg Time</p></div>
                 </div>
             </div>
 
@@ -195,10 +198,12 @@
             </div>
 
             <div style="background:white; padding:15px; border-radius:12px; margin-top:20px;">
-                <label style="font-size:0.85rem; color:#6b7280;">Voice Language</label>
-                <select id="lang-select" onchange="changeLang()" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #e5e7eb">
-                    <option value="en-US">English</option>
-                    <option value="hi-IN">Nepali / Hindi</option> </select>
+                <label style="font-size:0.85rem; color:#6b7280;">TV Screen Message</label>
+                <div style="display:flex; gap:10px; margin-top:5px;">
+                    <input type="text" id="admin-msg-input" placeholder="Ex: Lunch Break until 2pm">
+                    <button class="btn btn-primary" style="padding: 10px;" onclick="sendMsg()">Send</button>
+                </div>
+                <button class="btn btn-ghost" style="width:100%; margin-top:10px; font-size:0.8rem" onclick="send('CLR_MSG')">Clear Message</button>
             </div>
             
             <div style="text-align:center; color:#6b7280; margin-top:20px">Waiting: <b id="admin-wait">0</b></div>
@@ -206,9 +211,11 @@
     </main>
 
     <dialog id="admin-creds">
-        <h3>Host Details</h3>
+        <h3>Host Settings</h3>
         <p>ID: <b id="host-id-disp">...</b></p>
         <p>PIN: <b id="host-pin-disp" style="color:var(--danger)">...</b></p>
+        <hr style="margin: 15px 0; border:0; border-top:1px solid #eee;">
+        <button class="btn btn-danger" style="width:100%; margin-bottom:10px" onclick="factoryReset()">⚠️ Reset / Clear Queue</button>
         <form method="dialog"><button class="btn btn-ghost" style="width:100%">Close</button></form>
     </dialog>
 
@@ -223,41 +230,59 @@
     <script>
         // --- STATE & ANALYTICS ---
         let peer, conn, connections = [];
-        let state = { queue: [], current: null, lastId: 0, lang: 'en-US' };
-        let analytics = { served: 0, startTime: 0, history: [] }; // Store last 5 service times
+        let state = { queue: [], current: null, lastId: 0, msg: "" };
+        let analytics = { served: 0, startTime: 0, history: [] }; 
         let hostPin = "";
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
         // --- CORE FUNCTIONS ---
         function calculateEstWait(peopleAhead) {
-            if (analytics.history.length === 0) return Math.max(2, peopleAhead * 2); // Default 2 mins per person
-            const sum = analytics.history.reduce((a, b) => a + b, 0);
-            const avg = sum / analytics.history.length;
-            return Math.ceil((avg * peopleAhead) / 60000); // Return mins
+            if (analytics.history.length === 0) return Math.max(2, peopleAhead * 2); 
+            const avg = analytics.history.reduce((a, b) => a + b, 0) / analytics.history.length;
+            return Math.ceil((avg * peopleAhead) / 60000); 
         }
 
         function updateAnalytics() {
             const now = Date.now();
             if (analytics.startTime !== 0) {
                 const duration = now - analytics.startTime;
-                if(duration > 10000 && duration < 600000) { // Filter outliers (10s to 10m)
+                if(duration > 10000 && duration < 600000) { 
                     analytics.history.push(duration);
-                    if (analytics.history.length > 5) analytics.history.shift(); // Keep last 5
+                    if (analytics.history.length > 5) analytics.history.shift(); 
                 }
             }
             analytics.startTime = now;
             analytics.served++;
-            
-            // Calc Avg for display
-            const sum = analytics.history.reduce((a, b) => a + b, 0);
-            const avgMs = analytics.history.length ? (sum / analytics.history.length) : 0;
+            const avgMs = analytics.history.length ? (analytics.history.reduce((a, b) => a + b, 0) / analytics.history.length) : 0;
             return { total: analytics.served, avg: Math.round(avgMs / 60000) };
+        }
+
+        // NEW: PERSISTENCE (AUTO-SAVE)
+        function saveState() {
+            if(window.isHost) {
+                localStorage.setItem('qflow_host_state', JSON.stringify(state));
+                localStorage.setItem('qflow_host_analytics', JSON.stringify(analytics));
+            }
+        }
+
+        function loadState() {
+            const s = localStorage.getItem('qflow_host_state');
+            const a = localStorage.getItem('qflow_host_analytics');
+            if(s) state = JSON.parse(s);
+            if(a) analytics = JSON.parse(a);
+        }
+
+        function factoryReset() {
+            if(confirm("Are you sure? This deletes the current queue.")) {
+                localStorage.removeItem('qflow_host_state');
+                localStorage.removeItem('qflow_host_analytics');
+                location.reload();
+            }
         }
 
         function announce(t) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             
-            // Chime
             const osc = audioCtx.createOscillator();
             const g = audioCtx.createGain();
             osc.connect(g); g.connect(audioCtx.destination);
@@ -268,17 +293,11 @@
             osc.start(); osc.stop(audioCtx.currentTime + 2);
 
             setTimeout(() => {
-                let text = `Token ${t.id}, proceed to ${t.counter}`;
-                // Localization Logic
-                if(state.lang === 'hi-IN') text = `Token number ${t.id}, kripaya ${t.counter} par aayein`;
-                
-                const u = new SpeechSynthesisUtterance(text);
-                u.lang = state.lang;
+                const u = new SpeechSynthesisUtterance(`Token ${t.id}, proceed to ${t.counter}`);
                 u.rate = 0.9;
                 window.speechSynthesis.speak(u);
             }, 800);
 
-            // Visual Pop
             const el = document.getElementById('disp-token');
             el.style.transform = "scale(1.3)"; el.style.color = "#ef4444";
             setTimeout(() => { el.style.transform="scale(1)"; el.style.color = "var(--primary)"; }, 400);
@@ -286,8 +305,16 @@
 
         // --- HOST ---
         function initDisplay() {
+            window.isHost = true;
             document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
             document.getElementById('display-ui').classList.remove('hidden');
+
+            // Load previous session if exists
+            loadState();
+            if(state.queue.length > 0 || state.current) {
+                broadcast(); // Restore UI immediately
+                if(state.msg) updateMarquee(state.msg);
+            }
 
             const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
             let id = "";
@@ -318,34 +345,57 @@
                 const t = { id: state.lastId, name: data.name, code: Math.random().toString(36).substr(2,4).toUpperCase() };
                 state.queue.push(t);
                 c.send({ type: 'YOUR_TOKEN', token: t });
+                saveState(); // AUTO-SAVE
                 broadcast();
             }
 
             if(data.type === 'NEXT' && state.queue.length > 0) {
                 state.current = state.queue.shift();
                 state.current.counter = data.counter;
-                const stats = updateAnalytics(); // Update stats
+                const stats = updateAnalytics(); 
+                saveState(); // AUTO-SAVE
                 announce(state.current);
                 broadcast(stats);
             }
 
             if(data.type === 'RECALL' && state.current) announce(state.current);
-            if(data.type === 'LANG') state.lang = data.val;
+            
+            // NEW: MESSAGE HANDLING
+            if(data.type === 'MSG') {
+                state.msg = data.val;
+                saveState();
+                updateMarquee(data.val);
+            }
+            if(data.type === 'CLR_MSG') {
+                state.msg = "";
+                saveState();
+                updateMarquee("");
+            }
             
             if(data.type === 'ADD') {
                 state.lastId++;
                 state.queue.push({ id: state.lastId, name: 'Manual', code: 'MANU' });
+                saveState(); // AUTO-SAVE
                 broadcast();
             }
         }
 
+        function updateMarquee(msg) {
+            const bar = document.getElementById('marquee-bar');
+            const txt = document.getElementById('marquee-text');
+            if(msg) {
+                bar.style.display = 'block';
+                txt.innerText = msg;
+            } else {
+                bar.style.display = 'none';
+            }
+        }
+
         function broadcast(statsOverride) {
-            // Display Update
             document.getElementById('disp-token').innerText = state.current ? state.current.id : '--';
             document.getElementById('disp-counter').innerText = state.current ? state.current.counter : 'Ready';
             document.getElementById('disp-wait').innerText = state.queue.length;
             
-            // Calculate Stats for Admin
             const currentStats = statsOverride || { total: analytics.served, avg: 0 };
 
             connections.forEach(c => { 
@@ -381,7 +431,6 @@
                             const pos = d.state.queue.findIndex(x => x.id === myId);
                             document.getElementById('cust-ahead').innerText = pos === -1 ? "-" : pos;
                             
-                            // Estimate Time
                             if(pos > -1) {
                                 const avgTime = d.estTime || 2; 
                                 document.getElementById('est-time').innerText = `Est. Wait: ${Math.max(2, pos * 2)} min`;
@@ -447,10 +496,9 @@
             });
         }
         function send(type) { conn.send({ type: type, counter: window.ctrName }); }
-        function changeLang() { conn.send({ type: 'LANG', val: document.getElementById('lang-select').value }); }
+        function sendMsg() { conn.send({ type: 'MSG', val: document.getElementById('admin-msg-input').value }); }
 
         window.onload = () => { if(new URLSearchParams(window.location.search).get('id')) initCustomer(new URLSearchParams(window.location.search).get('id')); }
     </script>
 </body>
 </html>
-
