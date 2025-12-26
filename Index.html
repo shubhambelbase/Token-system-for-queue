@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Q-Flow Pro v4</title>
+    <title>Q-Flow Pro v5</title>
     
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -12,7 +12,6 @@
         :root {
             --primary: #6366f1;
             --primary-dark: #4f46e5;
-            --accent: #ec4899;
             --bg: #f3f4f6;
             --text: #1f2937;
             --success: #10b981;
@@ -39,11 +38,10 @@
         .btn:active { transform: scale(0.97); }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); }
         .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
-        .btn-danger { background: #fee2e2; color: var(--danger); box-shadow: none; }
         .btn-ghost { background: transparent; color: var(--text); border: 1px solid #d1d5db; box-shadow: none; }
 
         /* INPUTS */
-        input { padding: 16px; border-radius: 12px; border: 2px solid #e5e7eb; width: 100%; outline: none; transition: 0.2s; font-size: 1rem; background: #f9fafb; }
+        input { padding: 16px; border-radius: 12px; border: 2px solid #e5e7eb; width: 100%; outline: none; transition: 0.2s; font-size: 1rem; background: #f9fafb; text-align: center; }
         input:focus { border-color: var(--primary); background: white; }
 
         /* LANDING */
@@ -54,31 +52,34 @@
 
         /* DISPLAY SCREEN */
         #display-ui { display: grid; grid-template-columns: 2fr 1fr; height: 100%; }
-        .queue-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border-right: 1px solid #e5e7eb; position: relative; }
-        .token-huge { font-size: clamp(8rem, 25vw, 20rem); font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: -8px; font-variant-numeric: tabular-nums; text-shadow: 4px 4px 0px rgba(99,102,241,0.1); }
-        .counter-label { font-size: clamp(2rem, 5vw, 4rem); color: #6b7280; font-weight: 600; margin-top: 1rem; }
+        .queue-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border-right: 1px solid #e5e7eb; position: relative; padding: 20px; }
+        /* OPTIMIZED FONT SIZE FOR ALIGNMENT */
+        .token-huge { font-size: clamp(6rem, 20vw, 16rem); font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: -4px; font-variant-numeric: tabular-nums; text-align: center; }
+        .counter-label { font-size: clamp(1.5rem, 4vw, 3rem); color: #6b7280; font-weight: 600; margin-top: 1rem; text-align: center; }
 
         .join-zone { background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
         .qr-container { background: white; padding: 15px; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 25px; }
         .qr-container img { display: block; max-width: 100%; }
 
         /* CUSTOMER MOBILE */
-        .mobile-card { background: white; border-radius: 30px; padding: 2.5rem 2rem; width: 90%; max-width: 420px; text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .mobile-card { background: white; border-radius: 30px; padding: 2rem; width: 90%; max-width: 400px; text-align: center; box-shadow: var(--shadow); position: relative; margin: auto; }
         .reset-btn { position: absolute; top: 20px; right: 20px; background: #f3f4f6; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #6b7280; font-weight: bold; z-index: 10; transition: 0.2s; }
-        .reset-btn:hover { background: #e5e7eb; color: var(--danger); }
         
         .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; background: #f3f4f6; color: #6b7280; font-size: 0.85rem; font-weight: 600; margin-bottom: 25px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; }
         .dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
         .dot.error { background: var(--danger); }
 
+        /* NEW: SECURITY CODE BOX */
+        .sec-box { background: #f0fdf4; border: 1px dashed #16a34a; color: #15803d; padding: 8px 16px; border-radius: 8px; display: inline-block; font-family: monospace; font-size: 1.2rem; letter-spacing: 2px; font-weight: bold; margin-top: 10px; }
+        .sec-label { font-size: 0.75rem; color: #6b7280; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
+
         /* STATES */
-        .state-your-turn { background: linear-gradient(135deg, #e0e7ff, #ffffff); border: 2px solid var(--primary); animation: pulse-border 2s infinite; }
-        .state-thank-you { background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white; }
+        .state-your-turn { border: 2px solid var(--primary); animation: pulse-border 2s infinite; }
 
         /* ADMIN */
         .admin-stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 20px; text-align: center; border: 1px solid #e5e7eb; }
-        .security-code { background: #fee2e2; color: var(--danger); padding: 4px 10px; border-radius: 8px; font-weight: bold; font-family: monospace; font-size: 1.2rem; letter-spacing: 2px; margin-top: 10px; display: inline-block; }
+        .admin-sec-disp { background: #fee2e2; color: var(--danger); padding: 5px 12px; border-radius: 8px; font-weight: bold; font-family: monospace; font-size: 1.5rem; letter-spacing: 2px; margin-top: 10px; display: inline-block; }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -148,25 +149,29 @@
 
             <div id="step-join">
                 <h2 style="margin-bottom:10px; color:var(--primary)">Join Queue</h2>
-                <p style="color:#6b7280; margin-bottom:25px; font-size:0.95rem">Please enter your name to get a digital token.</p>
-                <input type="text" id="cust-name" placeholder="Enter your name" style="margin-bottom:20px; text-align:center">
+                <p style="color:#6b7280; margin-bottom:25px; font-size:0.95rem">Enter your name to get a digital token.</p>
+                <input type="text" id="cust-name" placeholder="Your Name" style="margin-bottom:20px;">
                 <button id="btn-join" class="btn btn-primary" style="width:100%" onclick="requestToken()" disabled>Get My Token</button>
             </div>
 
             <div id="step-wait" class="hidden">
                 <div class="reset-btn" onclick="exitQueue()" title="Quit Queue">✕</div>
-                <p style="color:#6b7280; font-size:0.85rem; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px">Your Token Number</p>
-                <h1 style="font-size:6rem; color:var(--primary); margin:0; line-height:1" id="my-token">--</h1>
-                <div id="status-pill" style="background:#d1fae5; color:#065f46; padding:6px 16px; border-radius:20px; font-weight:600; display:inline-block; font-size:0.9rem; margin-top:10px">In Queue</div>
+                <p style="color:#6b7280; font-size:0.85rem; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:5px">Your Token</p>
                 
-                <div style="margin-top:30px; padding-top:20px; border-top:1px solid #f3f4f6">
-                    <p style="color:#6b7280; font-size:0.9rem">People ahead of you</p>
-                    <b id="cust-ahead" style="font-size:1.5rem; color:var(--text)">0</b>
+                <h1 style="font-size:5rem; color:var(--primary); margin:0; line-height:1" id="my-token">--</h1>
+                
+                <div style="margin-top:10px;">
+                    <div class="sec-box" id="my-code">----</div>
+                    <div class="sec-label">Verification Code</div>
+                </div>
+
+                <div style="margin-top:25px; padding-top:20px; border-top:1px solid #f3f4f6">
+                    <p style="color:#6b7280; font-size:0.9rem">People ahead of you: <b id="cust-ahead" style="font-size:1.2rem; color:var(--text)">0</b></p>
                 </div>
 
                 <div id="turn-alert" class="hidden" style="margin-top:20px; background:var(--primary); color:white; padding:15px; border-radius:12px; animation: pulse-border 2s infinite;">
                     <h3 style="margin:0">IT'S YOUR TURN!</h3>
-                    <p style="font-size:0.9rem; opacity:0.9">Please proceed to the counter.</p>
+                    <p style="font-size:0.9rem; opacity:0.9">Proceed to counter.</p>
                 </div>
             </div>
 
@@ -174,7 +179,7 @@
                 <div class="reset-btn" onclick="resetToJoin()" title="New Token">↻</div>
                 <div style="font-size:4rem; margin-bottom:10px;">✨</div>
                 <h2 style="color:var(--text); margin-bottom:10px">All Done!</h2>
-                <p style="color:#6b7280; line-height:1.6">Thank you for visiting us.<br>We hope you have a beautiful day!</p>
+                <p style="color:#6b7280; line-height:1.6">Thank you for visiting us.<br>Have a beautiful day!</p>
                 <button class="btn btn-primary" style="margin-top:25px; width:100%" onclick="resetToJoin()">Get New Token</button>
             </div>
 
@@ -191,9 +196,10 @@
             <div class="admin-stat-card">
                 <p style="color:#6b7280; font-size:0.9rem">Current Serving Token</p>
                 <h1 style="font-size:4rem; color:var(--text); line-height:1;" id="admin-curr">--</h1>
+                
                 <div id="admin-security-box" class="hidden">
-                    <p style="font-size:0.75rem; color:#6b7280; margin-top:10px;">Security Verification Code</p>
-                    <div class="security-code" id="admin-sec-code">----</div>
+                    <p style="font-size:0.75rem; color:#6b7280; margin-top:15px;">VERIFICATION CODE</p>
+                    <div class="admin-sec-disp" id="admin-sec-code">----</div>
                 </div>
             </div>
 
@@ -314,14 +320,14 @@
 
             if(data.type === 'JOIN') {
                 state.lastId++;
-                // Generate Unique Security Code (Admin Only)
+                // Generate Unique Security Code
                 const secCode = Math.random().toString(36).substring(2, 6).toUpperCase();
                 
                 const t = { id: state.lastId, name: data.name, code: secCode };
                 state.queue.push(t);
                 
-                // Send token back (Security code NOT sent to user)
-                c.send({ type: 'YOUR_TOKEN', token: {id: t.id} });
+                // SEND TOKEN AND CODE BACK TO USER
+                c.send({ type: 'YOUR_TOKEN', token: t });
                 broadcast();
             }
 
@@ -393,20 +399,21 @@
                 conn.on('data', d => {
                     if(d.type === 'YOUR_TOKEN') {
                         localStorage.setItem('qflow_id', d.token.id);
-                        showWaitScreen(d.token.id);
+                        localStorage.setItem('qflow_code', d.token.code); // Save Code
+                        showWaitScreen(d.token.id, d.token.code);
                     }
                     if(d.type === 'UPDATE') {
                         const myId = parseInt(localStorage.getItem('qflow_id'));
                         if(myId) {
-                            // 1. Calculate Position
+                            // Calculate Position
                             const pos = d.state.queue.findIndex(x => x.id === myId);
                             document.getElementById('cust-ahead').innerText = pos === -1 ? "-" : pos;
 
-                            // 2. Check if Served (Thank You Screen)
+                            // Check if Served (Thank You Screen)
                             if(d.state.current && d.state.current.id > myId) {
                                 showThankYou();
                             }
-                            // 3. Check if My Turn
+                            // Check if My Turn
                             else if(d.state.current && d.state.current.id === myId) {
                                 document.getElementById('cust-card-container').classList.add('state-your-turn');
                                 document.getElementById('turn-alert').classList.remove('hidden');
@@ -424,29 +431,30 @@
             conn.send({ type: 'JOIN', name: name || 'Guest' });
         }
 
-        function showWaitScreen(id) {
+        function showWaitScreen(id, code) {
             document.getElementById('step-join').classList.add('hidden');
             document.getElementById('step-wait').classList.remove('hidden');
             document.getElementById('my-token').innerText = id;
+            document.getElementById('my-code').innerText = code || "----";
         }
 
         function showThankYou() {
-            // Hide Wait, Show Thanks
             document.getElementById('step-wait').classList.add('hidden');
             document.getElementById('cust-card-container').classList.remove('state-your-turn');
             document.getElementById('step-thanks').classList.remove('hidden');
             localStorage.removeItem('qflow_id');
+            localStorage.removeItem('qflow_code');
         }
 
         function exitQueue() {
             if(confirm("Quit queue and start over?")) {
                 localStorage.removeItem('qflow_id');
+                localStorage.removeItem('qflow_code');
                 resetToJoin();
             }
         }
 
         function resetToJoin() {
-            // Reset UI without reloading page (divert to scan again/join)
             document.getElementById('step-wait').classList.add('hidden');
             document.getElementById('step-thanks').classList.add('hidden');
             document.getElementById('step-join').classList.remove('hidden');
@@ -485,7 +493,7 @@
 
                         if(d.state.current) {
                             document.getElementById('admin-curr').innerText = d.state.current.id;
-                            // Show Security Code
+                            // Show Security Code for Admin
                             document.getElementById('admin-security-box').classList.remove('hidden');
                             document.getElementById('admin-sec-code').innerText = d.state.current.code || '----';
                         } else {
