@@ -32,7 +32,7 @@
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
 
-        /* TOAST NOTIFICATIONS (NEW) */
+        /* TOAST NOTIFICATIONS */
         #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
         .toast { background: rgba(30, 41, 59, 0.9); color: white; padding: 10px 20px; border-radius: 20px; font-size: 0.9rem; animation: fadeOut 0.5s forwards 3s; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); backdrop-filter: blur(4px); display: flex; align-items: center; gap: 8px; }
         @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-20px); } }
@@ -69,7 +69,6 @@
         .queue-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border-right: 1px solid #e5e7eb; position: relative; padding: 20px; }
         .token-huge { font-size: clamp(6rem, 20vw, 16rem); font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: -4px; }
         .counter-label { font-size: clamp(1.5rem, 4vw, 3rem); color: #6b7280; font-weight: 600; margin-top: 1rem; }
-        
         .waiting-badge { position: absolute; top: 20px; right: 80px; background: #eff6ff; color: var(--primary-dark); padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 1.2rem; border: 1px solid #bfdbfe; }
 
         .join-zone { background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
@@ -88,7 +87,6 @@
         .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; background: #f3f4f6; color: #6b7280; font-size: 0.85rem; font-weight: 600; margin-bottom: 25px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; }
         .dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
-
         .time-pill { background: #fffbeb; color: #b45309; padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; font-weight: 600; display: inline-block; margin-top: 5px; border: 1px solid #fcd34d; }
 
         /* ADMIN */
@@ -96,6 +94,20 @@
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
         .stat-item h4 { font-size: 1.5rem; margin: 0; color: var(--primary); }
         .stat-item p { font-size: 0.75rem; color: #6b7280; margin: 0; }
+        
+        /* NEW: ADMIN QUEUE LIST */
+        #admin-queue-list { 
+            background: white; border-radius: 12px; border: 1px solid #e5e7eb; 
+            max-height: 250px; overflow-y: auto; text-align: left; margin-top: 5px;
+        }
+        .queue-item { 
+            display: flex; align-items: center; padding: 12px; 
+            border-bottom: 1px solid #f3f4f6; font-size: 0.9rem; 
+        }
+        .queue-item:last-child { border-bottom: none; }
+        .q-id { font-weight: 700; color: var(--primary); width: 40px; }
+        .q-name { flex: 1; font-weight: 500; }
+        .q-code { font-family: monospace; background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: #6b7280; }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -213,6 +225,15 @@
                 </div>
             </div>
 
+            <div style="margin-bottom: 25px;">
+                <h3 style="font-size:0.95rem; color:#6b7280; margin-bottom:8px; display:flex; justify-content:space-between;">
+                    Upcoming Queue <span id="admin-wait-count" style="color:var(--primary); font-weight:bold">0</span>
+                </h3>
+                <div id="admin-queue-list">
+                    <div style="padding:15px; text-align:center; color:#9ca3af; font-size:0.9rem">Queue is empty</div>
+                </div>
+            </div>
+
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px">
                 <button id="btn-next" class="btn btn-primary" style="grid-column:span 2; padding:25px; font-size:1.2rem" onclick="send('NEXT')">📢 CALL NEXT</button>
                 <button class="btn btn-ghost" onclick="send('RECALL')">Recall</button>
@@ -228,8 +249,6 @@
                 <button class="btn btn-ghost" style="width:100%; margin-top:10px; font-size:0.8rem" onclick="send('CLR_MSG')">Clear Message</button>
                 <button class="btn btn-ghost" style="width:100%; margin-top:10px; font-size:0.8rem; border-color:#6366f1; color:#6366f1" onclick="send('TEST_AUDIO')">🔊 Test Display Audio</button>
             </div>
-            
-            <div style="text-align:center; color:#6b7280; margin-top:20px">Waiting: <b id="admin-wait">0</b></div>
         </div>
     </main>
 
@@ -257,7 +276,7 @@
             el.className = 'toast';
             el.innerHTML = `<span>ℹ️</span> ${msg}`;
             document.getElementById('toast-container').appendChild(el);
-            setTimeout(() => el.remove(), 3500); // Auto remove
+            setTimeout(() => el.remove(), 3500);
         }
 
         // --- FULLSCREEN ---
@@ -285,7 +304,7 @@
                 window.speechSynthesis.speak(u);
                 playChime();
                 document.getElementById('audio-btn').remove();
-                showToast("Sound System Active ✅"); // NEW: Toast instead of text
+                showToast("Sound System Active ✅"); 
             });
         }
 
@@ -402,7 +421,7 @@
                 c.send({ type: 'YOUR_TOKEN', token: t });
                 saveState();
                 broadcast();
-                showToast(`New Customer: ${data.name || 'Guest'}`);
+                // NO TOAST FOR NEW USER (Requested Change)
             }
 
             if(data.type === 'NEXT' && state.queue.length > 0) {
@@ -513,7 +532,8 @@
                         document.getElementById('admin-ui').classList.remove('hidden');
                     }
                     if(d.type === 'UPDATE') {
-                        document.getElementById('admin-wait').innerText = d.state.queue.length;
+                        // UPDATE STATS
+                        document.getElementById('admin-wait-count').innerText = d.state.queue.length;
                         document.getElementById('btn-next').disabled = (d.state.queue.length === 0);
                         if(d.state.current) {
                             document.getElementById('admin-curr').innerText = d.state.current.id;
@@ -523,6 +543,20 @@
                         if(d.stats) {
                             document.getElementById('stat-served').innerText = d.stats.total;
                             document.getElementById('stat-avg').innerText = d.stats.avg + "m";
+                        }
+                        
+                        // NEW: UPDATE QUEUE LIST
+                        const list = document.getElementById('admin-queue-list');
+                        list.innerHTML = "";
+                        if(d.state.queue.length === 0) {
+                            list.innerHTML = "<div style='padding:15px; text-align:center; color:#9ca3af; font-size:0.9rem'>Queue is empty</div>";
+                        } else {
+                            d.state.queue.forEach(q => {
+                                const item = document.createElement('div');
+                                item.className = 'queue-item';
+                                item.innerHTML = `<div class="q-id">#${q.id}</div><div class="q-name">${q.name}</div><div class="q-code">${q.code}</div>`;
+                                list.appendChild(item);
+                            });
                         }
                     }
                 });
