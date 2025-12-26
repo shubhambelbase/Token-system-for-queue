@@ -1,25 +1,26 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Q-Flow Pro (Fixed)</title>
+    <title>Q-Flow Pro v4</title>
     
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
     <style>
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --bg: #f8fafc;
-            --text: #1e293b;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #ec4899;
+            --bg: #f3f4f6;
+            --text: #1f2937;
             --success: #10b981;
             --danger: #ef4444;
-            --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --card-bg: #ffffff;
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { background: var(--bg); color: var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
 
@@ -27,69 +28,68 @@
         .hidden { display: none !important; }
         .full-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; overflow-y: auto; }
         .flex-center { display: flex; align-items: center; justify-content: center; }
-        .slide-up { animation: slideUp 0.3s ease-out; }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
 
         /* BUTTONS */
-        .btn { padding: 12px 24px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn:active { transform: scale(0.96); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
-        .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
-        .btn-primary:hover { background: var(--primary-dark); }
-        .btn-danger { background: #fee2e2; color: var(--danger); }
-        .btn-ghost { background: transparent; color: var(--text); border: 1px solid #cbd5e1; }
+        .btn { padding: 14px 28px; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+        .btn-danger { background: #fee2e2; color: var(--danger); box-shadow: none; }
+        .btn-ghost { background: transparent; color: var(--text); border: 1px solid #d1d5db; box-shadow: none; }
 
         /* INPUTS */
-        input { padding: 14px; border-radius: 10px; border: 2px solid #e2e8f0; width: 100%; outline: none; transition: 0.2s; font-size: 1rem; }
-        input:focus { border-color: var(--primary); }
+        input { padding: 16px; border-radius: 12px; border: 2px solid #e5e7eb; width: 100%; outline: none; transition: 0.2s; font-size: 1rem; background: #f9fafb; }
+        input:focus { border-color: var(--primary); background: white; }
 
         /* LANDING */
-        #landing { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1.5rem; padding: 2rem; max-width: 800px; margin: auto; width: 100%; align-content: center; }
-        .role-card { background: white; padding: 2rem; border-radius: 20px; box-shadow: var(--shadow); text-align: center; cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
-        .role-card:hover { transform: translateY(-5px); border-color: var(--primary); }
-        .role-icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+        #landing { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem; padding: 2rem; max-width: 900px; margin: auto; width: 100%; align-content: center; }
+        .role-card { background: var(--card-bg); padding: 2.5rem 1.5rem; border-radius: 24px; box-shadow: var(--shadow); text-align: center; cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
+        .role-card:hover { transform: translateY(-8px); border-color: var(--primary); }
+        .role-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1)); }
 
         /* DISPLAY SCREEN */
         #display-ui { display: grid; grid-template-columns: 2fr 1fr; height: 100%; }
-        .queue-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border-right: 1px solid #e2e8f0; position: relative; }
-        .token-huge { font-size: clamp(8rem, 25vw, 18rem); font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: -5px; font-variant-numeric: tabular-nums; }
-        .counter-label { font-size: clamp(2rem, 5vw, 4rem); color: #64748b; font-weight: 500; margin-top: 1rem; }
+        .queue-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border-right: 1px solid #e5e7eb; position: relative; }
+        .token-huge { font-size: clamp(8rem, 25vw, 20rem); font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: -8px; font-variant-numeric: tabular-nums; text-shadow: 4px 4px 0px rgba(99,102,241,0.1); }
+        .counter-label { font-size: clamp(2rem, 5vw, 4rem); color: #6b7280; font-weight: 600; margin-top: 1rem; }
 
-        .join-zone { background: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; position: relative; }
-        .qr-container { background: white; padding: 15px; border-radius: 15px; box-shadow: var(--shadow); margin-bottom: 20px; }
-        
-        /* QR Code image fix */
+        .join-zone { background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
+        .qr-container { background: white; padding: 15px; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 25px; }
         .qr-container img { display: block; max-width: 100%; }
 
-        /* Admin Overlay */
-        .admin-toggle { position: absolute; top: 20px; right: 20px; background: white; padding: 10px; border-radius: 50%; box-shadow: var(--shadow); cursor: pointer; z-index: 100; }
-        #admin-overlay { 
-            position: absolute; top: 70px; right: 20px; background: white; 
-            padding: 20px; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); 
-            width: 280px; z-index: 99; border: 1px solid #e2e8f0;
-            transform-origin: top right; transition: 0.2s;
-        }
-
         /* CUSTOMER MOBILE */
-        .mobile-card { background: white; border-radius: 24px; padding: 2rem; width: 90%; max-width: 400px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); position: relative; }
-        .reset-btn { position: absolute; top: 15px; right: 15px; background: #f1f5f9; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #64748b; font-weight: bold; }
+        .mobile-card { background: white; border-radius: 30px; padding: 2.5rem 2rem; width: 90%; max-width: 420px; text-align: center; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+        .reset-btn { position: absolute; top: 20px; right: 20px; background: #f3f4f6; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #6b7280; font-weight: bold; z-index: 10; transition: 0.2s; }
+        .reset-btn:hover { background: #e5e7eb; color: var(--danger); }
         
-        .status-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; background: #f1f5f9; color: #64748b; font-size: 0.8rem; font-weight: 600; margin-bottom: 20px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; }
-        .dot.online { background: var(--success); box-shadow: 0 0 8px var(--success); }
-        .dot.error { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
+        .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; background: #f3f4f6; color: #6b7280; font-size: 0.85rem; font-weight: 600; margin-bottom: 25px; }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; }
+        .dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .dot.error { background: var(--danger); }
+
+        /* STATES */
+        .state-your-turn { background: linear-gradient(135deg, #e0e7ff, #ffffff); border: 2px solid var(--primary); animation: pulse-border 2s infinite; }
+        .state-thank-you { background: linear-gradient(135deg, #ec4899, #8b5cf6); color: white; }
+
+        /* ADMIN */
+        .admin-stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 20px; text-align: center; border: 1px solid #e5e7eb; }
+        .security-code { background: #fee2e2; color: var(--danger); padding: 4px 10px; border-radius: 8px; font-weight: bold; font-family: monospace; font-size: 1.2rem; letter-spacing: 2px; margin-top: 10px; display: inline-block; }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
             #display-ui { grid-template-columns: 1fr; grid-template-rows: 2fr 1fr; }
-            .queue-zone { border-right: none; border-bottom: 1px solid #e2e8f0; }
-            .join-zone { flex-direction: row; justify-content: space-around; padding: 10px; }
-            /* QR HIDDEN REMOVED HERE TO FIX YOUR ISSUE */
+            .queue-zone { border-right: none; border-bottom: 1px solid #e5e7eb; }
+            .join-zone { flex-direction: row; justify-content: space-around; padding: 15px; }
             .qr-container { transform: scale(0.8); margin-bottom: 0; }
         }
 
-        dialog { border: none; border-radius: 16px; padding: 2rem; width: 90%; max-width: 400px; margin: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
-        dialog::backdrop { background: rgba(0,0,0,0.5); backdrop-filter: blur(2px); }
+        dialog { border: none; border-radius: 20px; padding: 2rem; width: 90%; max-width: 400px; margin: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        dialog::backdrop { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
     </style>
 </head>
 <body>
@@ -97,35 +97,28 @@
     <main id="landing" class="full-screen">
         <div class="role-card" onclick="initDisplay()">
             <span class="role-icon">📺</span>
-            <h3>Start Display</h3>
-            <p style="color:#64748b">For TV / Monitor</p>
+            <h3>Display Host</h3>
+            <p style="color:#6b7280">TV / Big Screen</p>
         </div>
         <div class="role-card" onclick="openAdminLogin()">
             <span class="role-icon">👮</span>
             <h3>Counter Staff</h3>
-            <p style="color:#64748b">Call Numbers</p>
+            <p style="color:#6b7280">Admin Control</p>
         </div>
         <div class="role-card" onclick="directJoin()">
             <span class="role-icon">📱</span>
             <h3>Customer</h3>
-            <p style="color:#64748b">Join Queue</p>
+            <p style="color:#6b7280">Get Token</p>
         </div>
     </main>
 
     <main id="display-ui" class="full-screen hidden">
-        <div class="admin-toggle" onclick="toggleAdminPanel()">⚙️</div>
-        
-        <div id="admin-overlay" class="hidden slide-up">
-            <h4 style="margin-bottom:10px;">Admin Credentials</h4>
-            <div style="font-size:0.9rem; margin-bottom:5px;">ID: <b id="host-id-disp" style="user-select: all; background:#eee; padding:2px 5px; border-radius:4px;">...</b></div>
-            <div style="font-size:0.9rem; margin-bottom:15px;">PIN: <b id="host-pin-disp" style="color:var(--danger); user-select: all;">...</b></div>
-            <p style="font-size:0.75rem; color:#64748b; line-height:1.4">Share these details with counter staff only. Do not show customers.</p>
-        </div>
+        <div style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.3" onclick="document.getElementById('admin-creds').showModal()">⚙️</div>
 
         <div class="queue-zone">
-            <div style="text-transform:uppercase; letter-spacing:3px; color:#94a3b8; font-weight:700; margin-bottom: 10px;">Now Serving</div>
+            <div style="text-transform:uppercase; letter-spacing:4px; color:#9ca3af; font-weight:700; margin-bottom: 10px;">Now Serving</div>
             <div class="token-huge slide-up" id="disp-token">--</div>
-            <div class="counter-label slide-up" id="disp-counter">Ready</div>
+            <div class="counter-label slide-up" id="disp-counter">Waiting for customers...</div>
         </div>
 
         <div class="join-zone">
@@ -133,21 +126,20 @@
                 <div id="qrcode"></div>
             </div>
             <div style="text-align: center;">
-                <h3 style="color:var(--primary); margin-bottom:5px">Scan to Join</h3>
-                <p style="color:#64748b; font-size:0.9rem">Or enter ID: <b id="public-id" style="font-size:1.1rem; color:var(--text)">...</b></p>
-                <div style="margin-top:15px; background:white; padding:5px 15px; border-radius:20px; font-weight:600; color:var(--primary); box-shadow:var(--shadow)">
-                    Waiting: <span id="disp-wait">0</span>
+                <h3 style="color:var(--text); margin-bottom:5px; font-size:1.5rem;">Scan to Join</h3>
+                <p style="color:#6b7280; margin-bottom:10px">Queue ID: <b id="public-id" style="color:var(--primary); font-size:1.2rem">...</b></p>
+                <div style="background:white; padding:8px 20px; border-radius:20px; font-weight:600; color:var(--primary); box-shadow:0 4px 6px rgba(0,0,0,0.05); display:inline-block">
+                    In Queue: <span id="disp-wait">0</span>
                 </div>
             </div>
-            <button id="audio-btn" class="btn btn-primary" onclick="enableAudio()" style="position:absolute; bottom:20px; padding: 8px 16px; font-size: 0.8rem;">
-                🔊 Enable Audio
+            <button id="audio-btn" class="btn btn-primary" onclick="enableAudio()" style="position:absolute; bottom:20px; font-size: 0.8rem;">
+                🔊 Enable Sound
             </button>
         </div>
     </main>
 
-    <main id="customer-ui" class="full-screen flex-center hidden" style="background:#eef2ff">
-        <div class="mobile-card slide-up">
-            <div class="reset-btn" onclick="resetCustomer()" title="Leave Queue">✕</div>
+    <main id="customer-ui" class="full-screen flex-center hidden" style="background: #eef2ff;">
+        <div id="cust-card-container" class="mobile-card slide-up">
             
             <div class="status-badge">
                 <div id="conn-dot" class="dot"></div>
@@ -155,33 +147,54 @@
             </div>
 
             <div id="step-join">
-                <h2 style="margin-bottom:10px">Welcome</h2>
-                <p style="color:#64748b; margin-bottom:20px; font-size:0.9rem">Enter your name to join the digital queue.</p>
-                <input type="text" id="cust-name" placeholder="Your Name" style="margin-bottom:15px">
-                <button id="btn-join" class="btn btn-primary" style="width:100%" onclick="requestToken()" disabled>Get Ticket</button>
+                <h2 style="margin-bottom:10px; color:var(--primary)">Join Queue</h2>
+                <p style="color:#6b7280; margin-bottom:25px; font-size:0.95rem">Please enter your name to get a digital token.</p>
+                <input type="text" id="cust-name" placeholder="Enter your name" style="margin-bottom:20px; text-align:center">
+                <button id="btn-join" class="btn btn-primary" style="width:100%" onclick="requestToken()" disabled>Get My Token</button>
             </div>
 
             <div id="step-wait" class="hidden">
-                <p style="color:#64748b; font-size:0.9rem; text-transform:uppercase; letter-spacing:1px">Your Ticket</p>
-                <h1 style="font-size:5rem; color:var(--primary); margin:10px 0; line-height:1" id="my-token">--</h1>
-                <div style="background:#d1fae5; color:#065f46; padding:8px 16px; border-radius:20px; font-weight:600; display:inline-block; font-size:0.9rem">In Queue</div>
-                <div style="margin-top:25px; border-top:1px solid #e2e8f0; padding-top:15px">
-                    <p style="color:#64748b; font-size:0.9rem">People ahead of you: <b id="cust-ahead">0</b></p>
+                <div class="reset-btn" onclick="exitQueue()" title="Quit Queue">✕</div>
+                <p style="color:#6b7280; font-size:0.85rem; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px">Your Token Number</p>
+                <h1 style="font-size:6rem; color:var(--primary); margin:0; line-height:1" id="my-token">--</h1>
+                <div id="status-pill" style="background:#d1fae5; color:#065f46; padding:6px 16px; border-radius:20px; font-weight:600; display:inline-block; font-size:0.9rem; margin-top:10px">In Queue</div>
+                
+                <div style="margin-top:30px; padding-top:20px; border-top:1px solid #f3f4f6">
+                    <p style="color:#6b7280; font-size:0.9rem">People ahead of you</p>
+                    <b id="cust-ahead" style="font-size:1.5rem; color:var(--text)">0</b>
+                </div>
+
+                <div id="turn-alert" class="hidden" style="margin-top:20px; background:var(--primary); color:white; padding:15px; border-radius:12px; animation: pulse-border 2s infinite;">
+                    <h3 style="margin:0">IT'S YOUR TURN!</h3>
+                    <p style="font-size:0.9rem; opacity:0.9">Please proceed to the counter.</p>
                 </div>
             </div>
+
+            <div id="step-thanks" class="hidden fade-in">
+                <div class="reset-btn" onclick="resetToJoin()" title="New Token">↻</div>
+                <div style="font-size:4rem; margin-bottom:10px;">✨</div>
+                <h2 style="color:var(--text); margin-bottom:10px">All Done!</h2>
+                <p style="color:#6b7280; line-height:1.6">Thank you for visiting us.<br>We hope you have a beautiful day!</p>
+                <button class="btn btn-primary" style="margin-top:25px; width:100%" onclick="resetToJoin()">Get New Token</button>
+            </div>
+
         </div>
     </main>
 
     <main id="admin-ui" class="full-screen hidden">
         <div style="max-width:600px; margin:0 auto; padding:20px; width:100%">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px">
-                <h2>Counter Control</h2>
+                <h2>Control Panel</h2>
                 <div class="status-badge"><div id="admin-dot" class="dot online"></div> Online</div>
             </div>
 
-            <div style="background:white; padding:20px; border-radius:15px; box-shadow:var(--shadow); margin-bottom:20px; text-align:center">
-                <p style="color:#64748b; font-size:0.9rem">Current Ticket</p>
-                <h1 style="font-size:3rem; color:var(--text)" id="admin-curr">--</h1>
+            <div class="admin-stat-card">
+                <p style="color:#6b7280; font-size:0.9rem">Current Serving Token</p>
+                <h1 style="font-size:4rem; color:var(--text); line-height:1;" id="admin-curr">--</h1>
+                <div id="admin-security-box" class="hidden">
+                    <p style="font-size:0.75rem; color:#6b7280; margin-top:10px;">Security Verification Code</p>
+                    <div class="security-code" id="admin-sec-code">----</div>
+                </div>
             </div>
 
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:30px">
@@ -192,29 +205,33 @@
                 <button class="btn btn-ghost" onclick="send('ADD')">+ Add Manual</button>
             </div>
 
-            <div style="text-align:center; color:#64748b">
-                Waiting in Queue: <b id="admin-wait" style="color:var(--primary)">0</b>
+            <div style="text-align:center; color:#6b7280">
+                Customers Waiting: <b id="admin-wait" style="color:var(--primary)">0</b>
             </div>
         </div>
     </main>
 
+    <dialog id="admin-creds">
+        <h3 style="margin-bottom:10px">Host Details</h3>
+        <p style="margin-bottom:5px">ID: <b id="host-id-disp">...</b></p>
+        <p style="margin-bottom:20px">PIN: <b id="host-pin-disp" style="color:var(--danger)">...</b></p>
+        <form method="dialog"><button class="btn btn-ghost" style="width:100%">Close</button></form>
+    </dialog>
+
     <dialog id="login-modal">
         <h3 style="margin-bottom:20px">Staff Login</h3>
-        <label style="font-size:0.85rem; color:#64748b; display:block; margin-bottom:5px">Display ID</label>
+        <label style="font-size:0.85rem; color:#6b7280; display:block; margin-bottom:5px">Display ID</label>
         <input type="text" id="target-id" placeholder="Ex: A1B2" style="margin-bottom:15px; text-transform:uppercase; letter-spacing: 2px; font-weight:bold">
-        
-        <label style="font-size:0.85rem; color:#64748b; display:block; margin-bottom:5px">PIN Code</label>
+        <label style="font-size:0.85rem; color:#6b7280; display:block; margin-bottom:5px">PIN Code</label>
         <input type="tel" id="target-pin" placeholder="****" style="margin-bottom:15px">
-        
-        <label style="font-size:0.85rem; color:#64748b; display:block; margin-bottom:5px">Counter Name</label>
+        <label style="font-size:0.85rem; color:#6b7280; display:block; margin-bottom:5px">Counter Name</label>
         <input type="text" id="ctr-name" placeholder="Ex: Counter 1" value="Counter 1" style="margin-bottom:25px">
-        
         <button class="btn btn-primary" style="width:100%" onclick="connectAdmin()">Connect</button>
         <button class="btn btn-ghost" style="width:100%; margin-top:10px; border:none" onclick="document.getElementById('login-modal').close()">Cancel</button>
     </dialog>
 
     <script>
-        // --- CORE ---
+        // --- CORE STATE ---
         let peer, conn;
         let connections = [];
         let state = { queue: [], current: null, lastId: 0 };
@@ -225,40 +242,34 @@
         
         function playChime() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            
             const t = audioCtx.currentTime;
             const o = audioCtx.createOscillator();
             const g = audioCtx.createGain();
-            
             o.connect(g);
             g.connect(audioCtx.destination);
-            
             o.type = 'sine';
-            o.frequency.setValueAtTime(660, t); // E5
-            o.frequency.setValueAtTime(554, t + 0.6); // C#5
-            
+            o.frequency.setValueAtTime(660, t); 
+            o.frequency.setValueAtTime(554, t + 0.6); 
             g.gain.setValueAtTime(0, t);
             g.gain.linearRampToValueAtTime(0.3, t + 0.1);
             g.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
             g.gain.setValueAtTime(0.3, t + 0.6);
             g.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
-            
             o.start(t);
             o.stop(t + 2);
         }
 
         function enableAudio() {
             audioCtx.resume().then(() => {
-                const u = new SpeechSynthesisUtterance("Audio System Online");
+                const u = new SpeechSynthesisUtterance("System Online");
                 u.volume = 0.1; 
                 window.speechSynthesis.speak(u);
-                
                 playChime();
                 document.getElementById('audio-btn').remove();
             });
         }
 
-        // --- HOST / DISPLAY LOGIC ---
+        // --- HOST LOGIC ---
         function initDisplay() {
             document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
             document.getElementById('display-ui').classList.remove('hidden');
@@ -266,30 +277,22 @@
             const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
             let id = "";
             for(let i=0; i<4; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
-            
             hostPin = Math.floor(1000 + Math.random() * 9000).toString();
 
             document.getElementById('public-id').innerText = id;
             document.getElementById('host-id-disp').innerText = id;
             document.getElementById('host-pin-disp').innerText = hostPin;
 
-            // QR Code with Error Handling
+            // QR Generation
             const url = `${window.location.href.split('?')[0]}?id=${id}`;
             document.getElementById("qrcode").innerHTML = "";
-            
             try {
-                if (typeof QRCode === 'undefined') {
-                    throw new Error("QR Library not loaded");
-                }
                 new QRCode(document.getElementById("qrcode"), { 
                     text: url, width: 160, height: 160,
                     colorDark : "#4f46e5", colorLight : "#ffffff",
                     correctLevel : QRCode.CorrectLevel.L
                 });
-            } catch (e) {
-                document.getElementById("qrcode").innerHTML = "<p style='color:red; font-size:0.8rem'>QR Load Error.<br>Check Internet.</p>";
-                console.error("QR Error:", e);
-            }
+            } catch(e) { document.getElementById("qrcode").innerText = "QR Error"; }
 
             window.onbeforeunload = () => "Active queue will be lost. Sure?";
 
@@ -298,14 +301,9 @@
                 connections.push(c);
                 c.on('data', d => handleHostData(d, c));
                 c.on('close', () => connections = connections.filter(x => x !== c));
-                
                 setTimeout(() => c.send({ type: 'UPDATE', state: state }), 500);
             });
-            
-            peer.on('error', err => {
-                alert("Network Error: " + err.type);
-                console.error(err);
-            });
+            peer.on('error', err => alert("Network Error: " + err.type));
         }
 
         function handleHostData(data, c) {
@@ -316,9 +314,14 @@
 
             if(data.type === 'JOIN') {
                 state.lastId++;
-                const t = { id: state.lastId, name: data.name, status: 'waiting' };
+                // Generate Unique Security Code (Admin Only)
+                const secCode = Math.random().toString(36).substring(2, 6).toUpperCase();
+                
+                const t = { id: state.lastId, name: data.name, code: secCode };
                 state.queue.push(t);
-                c.send({ type: 'YOUR_TOKEN', token: t });
+                
+                // Send token back (Security code NOT sent to user)
+                c.send({ type: 'YOUR_TOKEN', token: {id: t.id} });
                 broadcast();
             }
 
@@ -333,7 +336,7 @@
             if(data.type === 'RECALL' && state.current) announce(state.current);
             if(data.type === 'ADD') {
                 state.lastId++;
-                state.queue.push({ id: state.lastId, name: 'Manual' });
+                state.queue.push({ id: state.lastId, name: 'Manual', code: 'MANU' });
                 broadcast();
             }
         }
@@ -342,10 +345,7 @@
             document.getElementById('disp-token').innerText = state.current ? state.current.id : '--';
             document.getElementById('disp-counter').innerText = state.current ? state.current.counter : 'Ready';
             document.getElementById('disp-wait').innerText = state.queue.length;
-            
-            connections.forEach(c => {
-                if(c.open) c.send({ type: 'UPDATE', state: state });
-            });
+            connections.forEach(c => { if(c.open) c.send({ type: 'UPDATE', state: state }); });
         }
 
         function announce(t) {
@@ -356,7 +356,6 @@
                 u.rate = 0.9;
                 window.speechSynthesis.speak(u);
             }, 800);
-
             const el = document.getElementById('disp-token');
             el.style.transform = "scale(1.3)";
             el.style.color = "#ef4444"; 
@@ -364,10 +363,6 @@
                 el.style.transform="scale(1)";
                 el.style.color = "var(--primary)";
             }, 400);
-        }
-
-        function toggleAdminPanel() {
-            document.getElementById('admin-overlay').classList.toggle('hidden');
         }
 
         // --- CUSTOMER LOGIC ---
@@ -380,50 +375,47 @@
             document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
             document.getElementById('customer-ui').classList.remove('hidden');
 
-            const saved = localStorage.getItem('qflow_ticket');
-            if(saved) showTicket(JSON.parse(saved).id);
-
             peer = new Peer();
-            
             peer.on('error', err => {
                 document.getElementById('conn-text').innerText = "ID Not Found";
                 document.getElementById('conn-dot').className = "dot error";
-                alert("Could not connect. Check the Display ID.");
+                alert("Could not connect. Check ID.");
             });
 
             peer.on('open', () => {
                 conn = peer.connect(id);
-                
                 conn.on('open', () => {
                     document.getElementById('conn-dot').className = "dot online";
                     document.getElementById('conn-text').innerText = "Connected";
                     document.getElementById('btn-join').disabled = false;
                 });
-
+                
                 conn.on('data', d => {
                     if(d.type === 'YOUR_TOKEN') {
-                        localStorage.setItem('qflow_ticket', JSON.stringify(d.token));
-                        showTicket(d.token.id);
+                        localStorage.setItem('qflow_id', d.token.id);
+                        showWaitScreen(d.token.id);
                     }
                     if(d.type === 'UPDATE') {
-                        const myT = JSON.parse(localStorage.getItem('qflow_ticket') || '{}');
-                        if(myT.id) {
-                            const pos = d.state.queue.findIndex(x => x.id === myT.id);
+                        const myId = parseInt(localStorage.getItem('qflow_id'));
+                        if(myId) {
+                            // 1. Calculate Position
+                            const pos = d.state.queue.findIndex(x => x.id === myId);
                             document.getElementById('cust-ahead').innerText = pos === -1 ? "-" : pos;
 
-                            if(d.state.current && d.state.current.id === myT.id) {
-                                if(navigator.vibrate) navigator.vibrate([200, 100, 200, 100, 500]);
-                                document.getElementById('customer-ui').style.background = "#dcfce7";
+                            // 2. Check if Served (Thank You Screen)
+                            if(d.state.current && d.state.current.id > myId) {
+                                showThankYou();
+                            }
+                            // 3. Check if My Turn
+                            else if(d.state.current && d.state.current.id === myId) {
+                                document.getElementById('cust-card-container').classList.add('state-your-turn');
+                                document.getElementById('turn-alert').classList.remove('hidden');
+                                if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
                             }
                         }
                     }
                 });
-                
-                conn.on('close', () => {
-                    document.getElementById('conn-dot').className = "dot error";
-                    document.getElementById('conn-text').innerText = "Disconnected";
-                    alert("Host disconnected");
-                });
+                conn.on('close', () => alert("Host Disconnected"));
             });
         }
 
@@ -432,17 +424,34 @@
             conn.send({ type: 'JOIN', name: name || 'Guest' });
         }
 
-        function showTicket(id) {
+        function showWaitScreen(id) {
             document.getElementById('step-join').classList.add('hidden');
             document.getElementById('step-wait').classList.remove('hidden');
             document.getElementById('my-token').innerText = id;
         }
 
-        function resetCustomer() {
-            if(confirm("Leave the queue? Your ticket will be lost.")) {
-                localStorage.removeItem('qflow_ticket');
-                window.location.href = window.location.href.split('?')[0]; 
+        function showThankYou() {
+            // Hide Wait, Show Thanks
+            document.getElementById('step-wait').classList.add('hidden');
+            document.getElementById('cust-card-container').classList.remove('state-your-turn');
+            document.getElementById('step-thanks').classList.remove('hidden');
+            localStorage.removeItem('qflow_id');
+        }
+
+        function exitQueue() {
+            if(confirm("Quit queue and start over?")) {
+                localStorage.removeItem('qflow_id');
+                resetToJoin();
             }
+        }
+
+        function resetToJoin() {
+            // Reset UI without reloading page (divert to scan again/join)
+            document.getElementById('step-wait').classList.add('hidden');
+            document.getElementById('step-thanks').classList.add('hidden');
+            document.getElementById('step-join').classList.remove('hidden');
+            document.getElementById('cust-card-container').classList.remove('state-your-turn');
+            document.getElementById('cust-name').value = "";
         }
 
         // --- ADMIN LOGIC ---
@@ -452,52 +461,49 @@
             const id = document.getElementById('target-id').value.toUpperCase();
             const pin = document.getElementById('target-pin').value;
             window.ctrName = document.getElementById('ctr-name').value;
-            let loggedIn = false; 
+            let loggedIn = false;
 
             peer = new Peer();
-            
-            peer.on('error', err => {
-                alert("Connection failed: " + err.type);
-            });
-
+            peer.on('error', err => alert("Connection Failed"));
             peer.on('open', () => {
                 conn = peer.connect(id);
-                
-                conn.on('close', () => {
-                   alert("Lost connection to Display");
-                   location.reload(); 
-                });
-
+                conn.on('close', () => location.reload());
                 conn.on('open', () => conn.send({type: 'LOGIN', pin: pin}));
                 
                 conn.on('data', d => {
                     if(d.type === 'LOGIN_OK') {
-                        loggedIn = true; 
+                        loggedIn = true;
                         document.getElementById('login-modal').close();
                         document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
                         document.getElementById('admin-ui').classList.remove('hidden');
                     }
-                    if(d.type === 'LOGIN_FAIL') alert("Incorrect PIN");
+                    if(d.type === 'LOGIN_FAIL') alert("Wrong PIN");
                     
                     if(d.type === 'UPDATE' && loggedIn) {
-                        document.getElementById('admin-curr').innerText = d.state.current ? d.state.current.id : '--';
-                        const count = d.state.queue.length;
-                        document.getElementById('admin-wait').innerText = count;
-                        document.getElementById('btn-next').disabled = (count === 0);
+                        document.getElementById('admin-wait').innerText = d.state.queue.length;
+                        document.getElementById('btn-next').disabled = (d.state.queue.length === 0);
+
+                        if(d.state.current) {
+                            document.getElementById('admin-curr').innerText = d.state.current.id;
+                            // Show Security Code
+                            document.getElementById('admin-security-box').classList.remove('hidden');
+                            document.getElementById('admin-sec-code').innerText = d.state.current.code || '----';
+                        } else {
+                            document.getElementById('admin-curr').innerText = "--";
+                            document.getElementById('admin-security-box').classList.add('hidden');
+                        }
                     }
                 });
             });
         }
 
-        function send(type) {
-            conn.send({ type: type, counter: window.ctrName });
-        }
+        function send(type) { conn.send({ type: type, counter: window.ctrName }); }
 
         window.onload = () => {
             const url = new URLSearchParams(window.location.search);
             if(url.get('id')) initCustomer(url.get('id'));
         }
-
     </script>
 </body>
 </html>
+
