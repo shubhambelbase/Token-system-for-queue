@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,7 +94,6 @@
         .stat-item h4 { font-size: 1.5rem; margin: 0; color: var(--primary); }
         .stat-item p { font-size: 0.75rem; color: #6b7280; margin: 0; }
         
-        /* NEW: ADMIN QUEUE LIST */
         #admin-queue-list { 
             background: white; border-radius: 12px; border: 1px solid #e5e7eb; 
             max-height: 250px; overflow-y: auto; text-align: left; margin-top: 5px;
@@ -270,7 +268,7 @@
     </dialog>
 
     <script>
-        // --- NEW: TOAST SYSTEM ---
+        // --- TOAST SYSTEM ---
         function showToast(msg) {
             const el = document.createElement('div');
             el.className = 'toast';
@@ -391,7 +389,8 @@
             }
 
             const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-            let id = "";
+            // PATCH: Added "Q-" prefix to minimize ID collision on public PeerJS server
+            let id = "Q-";
             for(let i=0; i<4; i++) id += chars.charAt(Math.floor(Math.random() * chars.length));
             hostPin = Math.floor(1000 + Math.random() * 9000).toString();
 
@@ -421,7 +420,6 @@
                 c.send({ type: 'YOUR_TOKEN', token: t });
                 saveState();
                 broadcast();
-                // NO TOAST FOR NEW USER (Requested Change)
             }
 
             if(data.type === 'NEXT' && state.queue.length > 0) {
@@ -534,7 +532,14 @@
                     if(d.type === 'UPDATE') {
                         // UPDATE STATS
                         document.getElementById('admin-wait-count').innerText = d.state.queue.length;
-                        document.getElementById('btn-next').disabled = (d.state.queue.length === 0);
+                        
+                        // PATCH: Button Logic for Safety (Re-enable)
+                        const btn = document.getElementById('btn-next');
+                        if(btn) {
+                            btn.innerHTML = "📢 CALL NEXT";
+                            btn.disabled = (d.state.queue.length === 0);
+                        }
+
                         if(d.state.current) {
                             document.getElementById('admin-curr').innerText = d.state.current.id;
                             document.getElementById('admin-sec-box').classList.remove('hidden');
@@ -545,7 +550,7 @@
                             document.getElementById('stat-avg').innerText = d.stats.avg + "m";
                         }
                         
-                        // NEW: UPDATE QUEUE LIST
+                        // QUEUE LIST
                         const list = document.getElementById('admin-queue-list');
                         list.innerHTML = "";
                         if(d.state.queue.length === 0) {
@@ -562,10 +567,18 @@
                 });
             });
         }
-        function send(type) { conn.send({ type: type, counter: window.ctrName }); }
+        function send(type) { 
+            // PATCH: Debounce logic to prevent double-calls
+            if(type === 'NEXT') {
+                const btn = document.getElementById('btn-next');
+                if(btn) { btn.disabled = true; btn.innerText = "Processing..."; }
+            }
+            conn.send({ type: type, counter: window.ctrName }); 
+        }
         function sendMsg() { conn.send({ type: 'MSG', val: document.getElementById('admin-msg-input').value }); }
 
         window.onload = () => { if(new URLSearchParams(window.location.search).get('id')) initCustomer(new URLSearchParams(window.location.search).get('id')); }
     </script>
 </body>
 </html>
+
