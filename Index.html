@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Q-Flow Pro v5</title>
+    <title>Q-Flow Pro v7 (Smart)</title>
     
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -15,71 +15,66 @@
             --bg: #f3f4f6;
             --text: #1f2937;
             --success: #10b981;
+            --warning: #f59e0b;
             --danger: #ef4444;
             --card-bg: #ffffff;
-            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', system-ui, sans-serif; -webkit-tap-highlight-color: transparent; }
         
         body { background: var(--bg); color: var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
 
-        /* UTIL CLASSES */
+        /* UTIL */
         .hidden { display: none !important; }
         .full-screen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; overflow-y: auto; }
         .flex-center { display: flex; align-items: center; justify-content: center; }
         .slide-up { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
-        .fade-in { animation: fadeIn 0.5s ease-out; }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes pulse-border { 0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(99, 102, 241, 0); } 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); } }
 
-        /* BUTTONS */
-        .btn { padding: 14px 28px; border: none; border-radius: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        /* COMPONENTS */
+        .btn { padding: 14px 28px; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 1rem; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
         .btn:active { transform: scale(0.97); }
         .btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; }
+        .btn-primary { background: var(--primary); color: white; }
         .btn-ghost { background: transparent; color: var(--text); border: 1px solid #d1d5db; box-shadow: none; }
 
-        /* INPUTS */
         input { padding: 16px; border-radius: 12px; border: 2px solid #e5e7eb; width: 100%; outline: none; transition: 0.2s; font-size: 1rem; background: #f9fafb; text-align: center; }
         input:focus { border-color: var(--primary); background: white; }
 
         /* LANDING */
         #landing { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1.5rem; padding: 2rem; max-width: 900px; margin: auto; width: 100%; align-content: center; }
-        .role-card { background: var(--card-bg); padding: 2.5rem 1.5rem; border-radius: 24px; box-shadow: var(--shadow); text-align: center; cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
+        .role-card { background: white; padding: 2.5rem 1.5rem; border-radius: 24px; box-shadow: var(--shadow); text-align: center; cursor: pointer; transition: 0.3s; border: 2px solid transparent; }
         .role-card:hover { transform: translateY(-8px); border-color: var(--primary); }
-        .role-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.1)); }
+        .role-icon { font-size: 3.5rem; margin-bottom: 1rem; display: block; }
 
-        /* DISPLAY SCREEN */
+        /* DISPLAY */
         #display-ui { display: grid; grid-template-columns: 2fr 1fr; height: 100%; }
         .queue-zone { display: flex; flex-direction: column; align-items: center; justify-content: center; background: white; border-right: 1px solid #e5e7eb; position: relative; padding: 20px; }
-        /* OPTIMIZED FONT SIZE FOR ALIGNMENT */
-        .token-huge { font-size: clamp(6rem, 20vw, 16rem); font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: -4px; font-variant-numeric: tabular-nums; text-align: center; }
-        .counter-label { font-size: clamp(1.5rem, 4vw, 3rem); color: #6b7280; font-weight: 600; margin-top: 1rem; text-align: center; }
+        .token-huge { font-size: clamp(6rem, 20vw, 16rem); font-weight: 800; color: var(--primary); line-height: 1; letter-spacing: -4px; }
+        .counter-label { font-size: clamp(1.5rem, 4vw, 3rem); color: #6b7280; font-weight: 600; margin-top: 1rem; }
+        
+        .waiting-badge { position: absolute; top: 20px; right: 20px; background: #eff6ff; color: var(--primary-dark); padding: 10px 20px; border-radius: 12px; font-weight: 700; font-size: 1.2rem; border: 1px solid #bfdbfe; }
 
         .join-zone { background: #f8fafc; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; }
         .qr-container { background: white; padding: 15px; border-radius: 20px; box-shadow: var(--shadow); margin-bottom: 25px; }
         .qr-container img { display: block; max-width: 100%; }
 
-        /* CUSTOMER MOBILE */
+        /* CUSTOMER */
         .mobile-card { background: white; border-radius: 30px; padding: 2rem; width: 90%; max-width: 400px; text-align: center; box-shadow: var(--shadow); position: relative; margin: auto; }
-        .reset-btn { position: absolute; top: 20px; right: 20px; background: #f3f4f6; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #6b7280; font-weight: bold; z-index: 10; transition: 0.2s; }
+        .reset-btn { position: absolute; top: 20px; right: 20px; background: #f3f4f6; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #6b7280; font-weight: bold; z-index: 10; }
         
         .status-badge { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 20px; background: #f3f4f6; color: #6b7280; font-size: 0.85rem; font-weight: 600; margin-bottom: 25px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; background: #d1d5db; }
         .dot.online { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .dot.error { background: var(--danger); }
 
-        /* NEW: SECURITY CODE BOX */
-        .sec-box { background: #f0fdf4; border: 1px dashed #16a34a; color: #15803d; padding: 8px 16px; border-radius: 8px; display: inline-block; font-family: monospace; font-size: 1.2rem; letter-spacing: 2px; font-weight: bold; margin-top: 10px; }
-        .sec-label { font-size: 0.75rem; color: #6b7280; margin-top: 5px; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* STATES */
-        .state-your-turn { border: 2px solid var(--primary); animation: pulse-border 2s infinite; }
+        .time-pill { background: #fffbeb; color: #b45309; padding: 5px 12px; border-radius: 15px; font-size: 0.85rem; font-weight: 600; display: inline-block; margin-top: 5px; border: 1px solid #fcd34d; }
 
         /* ADMIN */
         .admin-stat-card { background: white; padding: 20px; border-radius: 16px; box-shadow: var(--shadow); margin-bottom: 20px; text-align: center; border: 1px solid #e5e7eb; }
-        .admin-sec-disp { background: #fee2e2; color: var(--danger); padding: 5px 12px; border-radius: 8px; font-weight: bold; font-family: monospace; font-size: 1.5rem; letter-spacing: 2px; margin-top: 10px; display: inline-block; }
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        .stat-item h4 { font-size: 1.5rem; margin: 0; color: var(--primary); }
+        .stat-item p { font-size: 0.75rem; color: #6b7280; margin: 0; }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {
@@ -87,6 +82,7 @@
             .queue-zone { border-right: none; border-bottom: 1px solid #e5e7eb; }
             .join-zone { flex-direction: row; justify-content: space-around; padding: 15px; }
             .qr-container { transform: scale(0.8); margin-bottom: 0; }
+            .waiting-badge { font-size: 1rem; padding: 8px 12px; top: 10px; right: 10px; }
         }
 
         dialog { border: none; border-radius: 20px; padding: 2rem; width: 90%; max-width: 400px; margin: auto; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
@@ -114,168 +110,181 @@
     </main>
 
     <main id="display-ui" class="full-screen hidden">
-        <div style="position:absolute; top:20px; right:20px; cursor:pointer; opacity:0.3" onclick="document.getElementById('admin-creds').showModal()">⚙️</div>
-
+        <div style="position:absolute; top:20px; left:20px; cursor:pointer; opacity:0.3; z-index:50;" onclick="document.getElementById('admin-creds').showModal()">⚙️</div>
+        
         <div class="queue-zone">
+            <div class="waiting-badge">Waiting: <span id="disp-wait">0</span></div>
             <div style="text-transform:uppercase; letter-spacing:4px; color:#9ca3af; font-weight:700; margin-bottom: 10px;">Now Serving</div>
             <div class="token-huge slide-up" id="disp-token">--</div>
-            <div class="counter-label slide-up" id="disp-counter">Waiting for customers...</div>
+            <div class="counter-label slide-up" id="disp-counter">Ready</div>
         </div>
 
         <div class="join-zone">
-            <div class="qr-container">
-                <div id="qrcode"></div>
-            </div>
+            <div class="qr-container"><div id="qrcode"></div></div>
             <div style="text-align: center;">
-                <h3 style="color:var(--text); margin-bottom:5px; font-size:1.5rem;">Scan to Join</h3>
-                <p style="color:#6b7280; margin-bottom:10px">Queue ID: <b id="public-id" style="color:var(--primary); font-size:1.2rem">...</b></p>
-                <div style="background:white; padding:8px 20px; border-radius:20px; font-weight:600; color:var(--primary); box-shadow:0 4px 6px rgba(0,0,0,0.05); display:inline-block">
-                    In Queue: <span id="disp-wait">0</span>
-                </div>
+                <h3 style="color:var(--text); margin-bottom:5px;">Scan to Join</h3>
+                <p style="color:#6b7280; margin-bottom:10px">ID: <b id="public-id" style="color:var(--primary)">...</b></p>
             </div>
-            <button id="audio-btn" class="btn btn-primary" onclick="enableAudio()" style="position:absolute; bottom:20px; font-size: 0.8rem;">
-                🔊 Enable Sound
-            </button>
+            <button id="audio-btn" class="btn btn-primary" onclick="enableAudio()" style="position:absolute; bottom:20px; font-size: 0.8rem;">🔊 Enable Sound</button>
         </div>
     </main>
 
     <main id="customer-ui" class="full-screen flex-center hidden" style="background: #eef2ff;">
         <div id="cust-card-container" class="mobile-card slide-up">
-            
-            <div class="status-badge">
-                <div id="conn-dot" class="dot"></div>
-                <span id="conn-text">Connecting...</span>
-            </div>
+            <div class="status-badge"><div id="conn-dot" class="dot"></div><span id="conn-text">Connecting...</span></div>
 
             <div id="step-join">
                 <h2 style="margin-bottom:10px; color:var(--primary)">Join Queue</h2>
-                <p style="color:#6b7280; margin-bottom:25px; font-size:0.95rem">Enter your name to get a digital token.</p>
                 <input type="text" id="cust-name" placeholder="Your Name" style="margin-bottom:20px;">
-                <button id="btn-join" class="btn btn-primary" style="width:100%" onclick="requestToken()" disabled>Get My Token</button>
+                <button id="btn-join" class="btn btn-primary" style="width:100%" onclick="requestToken()" disabled>Get Ticket</button>
             </div>
 
             <div id="step-wait" class="hidden">
-                <div class="reset-btn" onclick="exitQueue()" title="Quit Queue">✕</div>
+                <div class="reset-btn" onclick="exitQueue()">✕</div>
                 <p style="color:#6b7280; font-size:0.85rem; text-transform:uppercase; letter-spacing:1.5px; margin-bottom:5px">Your Token</p>
-                
                 <h1 style="font-size:5rem; color:var(--primary); margin:0; line-height:1" id="my-token">--</h1>
+                <div class="time-pill" id="est-time">Est. Wait: -- min</div>
                 
-                <div style="margin-top:10px;">
-                    <div class="sec-box" id="my-code">----</div>
-                    <div class="sec-label">Verification Code</div>
-                </div>
-
                 <div style="margin-top:25px; padding-top:20px; border-top:1px solid #f3f4f6">
-                    <p style="color:#6b7280; font-size:0.9rem">People ahead of you: <b id="cust-ahead" style="font-size:1.2rem; color:var(--text)">0</b></p>
+                    <p style="color:#6b7280; font-size:0.9rem">People ahead: <b id="cust-ahead" style="font-size:1.2rem; color:var(--text)">0</b></p>
+                    <p style="font-size:0.8rem; color:#6b7280; margin-top:5px;">Code: <b id="my-code" style="font-family:monospace">----</b></p>
                 </div>
 
                 <div id="turn-alert" class="hidden" style="margin-top:20px; background:var(--primary); color:white; padding:15px; border-radius:12px; animation: pulse-border 2s infinite;">
                     <h3 style="margin:0">IT'S YOUR TURN!</h3>
-                    <p style="font-size:0.9rem; opacity:0.9">Proceed to counter.</p>
                 </div>
             </div>
 
-            <div id="step-thanks" class="hidden fade-in">
-                <div class="reset-btn" onclick="resetToJoin()" title="New Token">↻</div>
+            <div id="step-thanks" class="hidden">
+                <div class="reset-btn" onclick="resetToJoin()">↻</div>
                 <div style="font-size:4rem; margin-bottom:10px;">✨</div>
-                <h2 style="color:var(--text); margin-bottom:10px">All Done!</h2>
-                <p style="color:#6b7280; line-height:1.6">Thank you for visiting us.<br>Have a beautiful day!</p>
+                <h2 style="color:var(--text)">All Done!</h2>
                 <button class="btn btn-primary" style="margin-top:25px; width:100%" onclick="resetToJoin()">Get New Token</button>
             </div>
-
         </div>
     </main>
 
     <main id="admin-ui" class="full-screen hidden">
         <div style="max-width:600px; margin:0 auto; padding:20px; width:100%">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
                 <h2>Control Panel</h2>
                 <div class="status-badge"><div id="admin-dot" class="dot online"></div> Online</div>
             </div>
 
             <div class="admin-stat-card">
-                <p style="color:#6b7280; font-size:0.9rem">Current Serving Token</p>
+                <p style="color:#6b7280; font-size:0.9rem">Current Serving</p>
                 <h1 style="font-size:4rem; color:var(--text); line-height:1;" id="admin-curr">--</h1>
+                <div id="admin-sec-box" class="hidden">Code: <b id="admin-sec-code">----</b></div>
                 
-                <div id="admin-security-box" class="hidden">
-                    <p style="font-size:0.75rem; color:#6b7280; margin-top:15px;">VERIFICATION CODE</p>
-                    <div class="admin-sec-disp" id="admin-sec-code">----</div>
+                <div class="stat-grid">
+                    <div class="stat-item">
+                        <h4 id="stat-served">0</h4>
+                        <p>Total Served</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4 id="stat-avg">0m</h4>
+                        <p>Avg Time</p>
+                    </div>
                 </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:30px">
-                <button id="btn-next" class="btn btn-primary" style="grid-column:span 2; padding:25px; font-size:1.2rem" onclick="send('NEXT')">
-                    📢 CALL NEXT
-                </button>
-                <button class="btn btn-ghost" onclick="send('RECALL')">Recall Current</button>
-                <button class="btn btn-ghost" onclick="send('ADD')">+ Add Manual</button>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px">
+                <button id="btn-next" class="btn btn-primary" style="grid-column:span 2; padding:25px; font-size:1.2rem" onclick="send('NEXT')">📢 CALL NEXT</button>
+                <button class="btn btn-ghost" onclick="send('RECALL')">Recall</button>
+                <button class="btn btn-ghost" onclick="send('ADD')">+ Manual</button>
             </div>
 
-            <div style="text-align:center; color:#6b7280">
-                Customers Waiting: <b id="admin-wait" style="color:var(--primary)">0</b>
+            <div style="background:white; padding:15px; border-radius:12px; margin-top:20px;">
+                <label style="font-size:0.85rem; color:#6b7280;">Voice Language</label>
+                <select id="lang-select" onchange="changeLang()" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid #e5e7eb">
+                    <option value="en-US">English</option>
+                    <option value="hi-IN">Nepali / Hindi</option> </select>
             </div>
+            
+            <div style="text-align:center; color:#6b7280; margin-top:20px">Waiting: <b id="admin-wait">0</b></div>
         </div>
     </main>
 
     <dialog id="admin-creds">
-        <h3 style="margin-bottom:10px">Host Details</h3>
-        <p style="margin-bottom:5px">ID: <b id="host-id-disp">...</b></p>
-        <p style="margin-bottom:20px">PIN: <b id="host-pin-disp" style="color:var(--danger)">...</b></p>
+        <h3>Host Details</h3>
+        <p>ID: <b id="host-id-disp">...</b></p>
+        <p>PIN: <b id="host-pin-disp" style="color:var(--danger)">...</b></p>
         <form method="dialog"><button class="btn btn-ghost" style="width:100%">Close</button></form>
     </dialog>
 
     <dialog id="login-modal">
-        <h3 style="margin-bottom:20px">Staff Login</h3>
-        <label style="font-size:0.85rem; color:#6b7280; display:block; margin-bottom:5px">Display ID</label>
-        <input type="text" id="target-id" placeholder="Ex: A1B2" style="margin-bottom:15px; text-transform:uppercase; letter-spacing: 2px; font-weight:bold">
-        <label style="font-size:0.85rem; color:#6b7280; display:block; margin-bottom:5px">PIN Code</label>
-        <input type="tel" id="target-pin" placeholder="****" style="margin-bottom:15px">
-        <label style="font-size:0.85rem; color:#6b7280; display:block; margin-bottom:5px">Counter Name</label>
-        <input type="text" id="ctr-name" placeholder="Ex: Counter 1" value="Counter 1" style="margin-bottom:25px">
+        <h3>Staff Login</h3>
+        <input type="text" id="target-id" placeholder="Display ID" style="margin-bottom:10px; text-transform:uppercase;">
+        <input type="tel" id="target-pin" placeholder="PIN" style="margin-bottom:10px">
+        <input type="text" id="ctr-name" value="Counter 1" style="margin-bottom:20px">
         <button class="btn btn-primary" style="width:100%" onclick="connectAdmin()">Connect</button>
-        <button class="btn btn-ghost" style="width:100%; margin-top:10px; border:none" onclick="document.getElementById('login-modal').close()">Cancel</button>
     </dialog>
 
     <script>
-        // --- CORE STATE ---
-        let peer, conn;
-        let connections = [];
-        let state = { queue: [], current: null, lastId: 0 };
+        // --- STATE & ANALYTICS ---
+        let peer, conn, connections = [];
+        let state = { queue: [], current: null, lastId: 0, lang: 'en-US' };
+        let analytics = { served: 0, startTime: 0, history: [] }; // Store last 5 service times
         let hostPin = "";
-        
-        // --- AUDIO ENGINE ---
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playChime() {
+
+        // --- CORE FUNCTIONS ---
+        function calculateEstWait(peopleAhead) {
+            if (analytics.history.length === 0) return Math.max(2, peopleAhead * 2); // Default 2 mins per person
+            const sum = analytics.history.reduce((a, b) => a + b, 0);
+            const avg = sum / analytics.history.length;
+            return Math.ceil((avg * peopleAhead) / 60000); // Return mins
+        }
+
+        function updateAnalytics() {
+            const now = Date.now();
+            if (analytics.startTime !== 0) {
+                const duration = now - analytics.startTime;
+                if(duration > 10000 && duration < 600000) { // Filter outliers (10s to 10m)
+                    analytics.history.push(duration);
+                    if (analytics.history.length > 5) analytics.history.shift(); // Keep last 5
+                }
+            }
+            analytics.startTime = now;
+            analytics.served++;
+            
+            // Calc Avg for display
+            const sum = analytics.history.reduce((a, b) => a + b, 0);
+            const avgMs = analytics.history.length ? (sum / analytics.history.length) : 0;
+            return { total: analytics.served, avg: Math.round(avgMs / 60000) };
+        }
+
+        function announce(t) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            const t = audioCtx.currentTime;
-            const o = audioCtx.createOscillator();
+            
+            // Chime
+            const osc = audioCtx.createOscillator();
             const g = audioCtx.createGain();
-            o.connect(g);
-            g.connect(audioCtx.destination);
-            o.type = 'sine';
-            o.frequency.setValueAtTime(660, t); 
-            o.frequency.setValueAtTime(554, t + 0.6); 
-            g.gain.setValueAtTime(0, t);
-            g.gain.linearRampToValueAtTime(0.3, t + 0.1);
-            g.gain.exponentialRampToValueAtTime(0.01, t + 0.5);
-            g.gain.setValueAtTime(0.3, t + 0.6);
-            g.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
-            o.start(t);
-            o.stop(t + 2);
-        }
+            osc.connect(g); g.connect(audioCtx.destination);
+            osc.frequency.setValueAtTime(660, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(554, audioCtx.currentTime + 0.6);
+            g.gain.linearRampToValueAtTime(0.3, audioCtx.currentTime + 0.1);
+            g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.8);
+            osc.start(); osc.stop(audioCtx.currentTime + 2);
 
-        function enableAudio() {
-            audioCtx.resume().then(() => {
-                const u = new SpeechSynthesisUtterance("System Online");
-                u.volume = 0.1; 
+            setTimeout(() => {
+                let text = `Token ${t.id}, proceed to ${t.counter}`;
+                // Localization Logic
+                if(state.lang === 'hi-IN') text = `Token number ${t.id}, kripaya ${t.counter} par aayein`;
+                
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = state.lang;
+                u.rate = 0.9;
                 window.speechSynthesis.speak(u);
-                playChime();
-                document.getElementById('audio-btn').remove();
-            });
+            }, 800);
+
+            // Visual Pop
+            const el = document.getElementById('disp-token');
+            el.style.transform = "scale(1.3)"; el.style.color = "#ef4444";
+            setTimeout(() => { el.style.transform="scale(1)"; el.style.color = "var(--primary)"; }, 400);
         }
 
-        // --- HOST LOGIC ---
+        // --- HOST ---
         function initDisplay() {
             document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
             document.getElementById('display-ui').classList.remove('hidden');
@@ -289,57 +298,40 @@
             document.getElementById('host-id-disp').innerText = id;
             document.getElementById('host-pin-disp').innerText = hostPin;
 
-            // QR Generation
-            const url = `${window.location.href.split('?')[0]}?id=${id}`;
-            document.getElementById("qrcode").innerHTML = "";
-            try {
-                new QRCode(document.getElementById("qrcode"), { 
-                    text: url, width: 160, height: 160,
-                    colorDark : "#4f46e5", colorLight : "#ffffff",
-                    correctLevel : QRCode.CorrectLevel.L
-                });
-            } catch(e) { document.getElementById("qrcode").innerText = "QR Error"; }
+            try { new QRCode(document.getElementById("qrcode"), { text: `${window.location.href.split('?')[0]}?id=${id}`, width: 160, height: 160 }); } catch(e){}
 
-            window.onbeforeunload = () => "Active queue will be lost. Sure?";
-
+            window.onbeforeunload = () => "Sure?";
             peer = new Peer(id);
             peer.on('connection', c => {
                 connections.push(c);
                 c.on('data', d => handleHostData(d, c));
                 c.on('close', () => connections = connections.filter(x => x !== c));
-                setTimeout(() => c.send({ type: 'UPDATE', state: state }), 500);
+                setTimeout(() => c.send({ type: 'UPDATE', state: state, stats: {served: analytics.served, avg: 0} }), 500);
             });
-            peer.on('error', err => alert("Network Error: " + err.type));
         }
 
         function handleHostData(data, c) {
-            if(data.type === 'LOGIN') {
-                if(data.pin === hostPin) c.send({type:'LOGIN_OK'});
-                else c.send({type:'LOGIN_FAIL'});
-            }
-
+            if(data.type === 'LOGIN') c.send({type: (data.pin === hostPin ? 'LOGIN_OK' : 'LOGIN_FAIL')});
+            
             if(data.type === 'JOIN') {
                 state.lastId++;
-                // Generate Unique Security Code
-                const secCode = Math.random().toString(36).substring(2, 6).toUpperCase();
-                
-                const t = { id: state.lastId, name: data.name, code: secCode };
+                const t = { id: state.lastId, name: data.name, code: Math.random().toString(36).substr(2,4).toUpperCase() };
                 state.queue.push(t);
-                
-                // SEND TOKEN AND CODE BACK TO USER
                 c.send({ type: 'YOUR_TOKEN', token: t });
                 broadcast();
             }
 
-            if(data.type === 'NEXT') {
-                if(state.queue.length > 0) {
-                    state.current = state.queue.shift();
-                    state.current.counter = data.counter;
-                    announce(state.current);
-                    broadcast();
-                }
+            if(data.type === 'NEXT' && state.queue.length > 0) {
+                state.current = state.queue.shift();
+                state.current.counter = data.counter;
+                const stats = updateAnalytics(); // Update stats
+                announce(state.current);
+                broadcast(stats);
             }
+
             if(data.type === 'RECALL' && state.current) announce(state.current);
+            if(data.type === 'LANG') state.lang = data.val;
+            
             if(data.type === 'ADD') {
                 state.lastId++;
                 state.queue.push({ id: state.lastId, name: 'Manual', code: 'MANU' });
@@ -347,47 +339,29 @@
             }
         }
 
-        function broadcast() {
+        function broadcast(statsOverride) {
+            // Display Update
             document.getElementById('disp-token').innerText = state.current ? state.current.id : '--';
             document.getElementById('disp-counter').innerText = state.current ? state.current.counter : 'Ready';
             document.getElementById('disp-wait').innerText = state.queue.length;
-            connections.forEach(c => { if(c.open) c.send({ type: 'UPDATE', state: state }); });
+            
+            // Calculate Stats for Admin
+            const currentStats = statsOverride || { total: analytics.served, avg: 0 };
+
+            connections.forEach(c => { 
+                if(c.open) c.send({ type: 'UPDATE', state: state, stats: currentStats, estTime: calculateEstWait(state.queue.length) }); 
+            });
         }
 
-        function announce(t) {
-            playChime();
-            setTimeout(() => {
-                const text = `Token number ${t.id}, please proceed to ${t.counter}`;
-                const u = new SpeechSynthesisUtterance(text);
-                u.rate = 0.9;
-                window.speechSynthesis.speak(u);
-            }, 800);
-            const el = document.getElementById('disp-token');
-            el.style.transform = "scale(1.3)";
-            el.style.color = "#ef4444"; 
-            setTimeout(() => {
-                el.style.transform="scale(1)";
-                el.style.color = "var(--primary)";
-            }, 400);
-        }
+        function enableAudio() { audioCtx.resume(); document.getElementById('audio-btn').remove(); }
 
-        // --- CUSTOMER LOGIC ---
-        function directJoin() {
-            const id = prompt("Enter Display ID:");
-            if(id) initCustomer(id.toUpperCase());
-        }
+        // --- CUSTOMER ---
+        function directJoin() { const id = prompt("Display ID:"); if(id) initCustomer(id.toUpperCase()); }
 
         function initCustomer(id) {
             document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
             document.getElementById('customer-ui').classList.remove('hidden');
-
             peer = new Peer();
-            peer.on('error', err => {
-                document.getElementById('conn-text').innerText = "ID Not Found";
-                document.getElementById('conn-dot').className = "dot error";
-                alert("Could not connect. Check ID.");
-            });
-
             peer.on('open', () => {
                 conn = peer.connect(id);
                 conn.on('open', () => {
@@ -395,122 +369,87 @@
                     document.getElementById('conn-text').innerText = "Connected";
                     document.getElementById('btn-join').disabled = false;
                 });
-                
                 conn.on('data', d => {
                     if(d.type === 'YOUR_TOKEN') {
                         localStorage.setItem('qflow_id', d.token.id);
-                        localStorage.setItem('qflow_code', d.token.code); // Save Code
-                        showWaitScreen(d.token.id, d.token.code);
+                        localStorage.setItem('qflow_code', d.token.code);
+                        showWait(d.token.id, d.token.code);
                     }
                     if(d.type === 'UPDATE') {
                         const myId = parseInt(localStorage.getItem('qflow_id'));
                         if(myId) {
-                            // Calculate Position
                             const pos = d.state.queue.findIndex(x => x.id === myId);
                             document.getElementById('cust-ahead').innerText = pos === -1 ? "-" : pos;
-
-                            // Check if Served (Thank You Screen)
-                            if(d.state.current && d.state.current.id > myId) {
-                                showThankYou();
+                            
+                            // Estimate Time
+                            if(pos > -1) {
+                                const avgTime = d.estTime || 2; 
+                                document.getElementById('est-time').innerText = `Est. Wait: ${Math.max(2, pos * 2)} min`;
                             }
-                            // Check if My Turn
-                            else if(d.state.current && d.state.current.id === myId) {
-                                document.getElementById('cust-card-container').classList.add('state-your-turn');
+
+                            if(d.state.current && d.state.current.id === myId) {
                                 document.getElementById('turn-alert').classList.remove('hidden');
-                                if(navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                                if(navigator.vibrate) navigator.vibrate([200]);
+                            } else if(d.state.current && d.state.current.id > myId) {
+                                showThanks();
                             }
                         }
                     }
                 });
-                conn.on('close', () => alert("Host Disconnected"));
             });
         }
-
-        function requestToken() {
-            const name = document.getElementById('cust-name').value;
-            conn.send({ type: 'JOIN', name: name || 'Guest' });
-        }
-
-        function showWaitScreen(id, code) {
-            document.getElementById('step-join').classList.add('hidden');
+        
+        function requestToken() { conn.send({ type: 'JOIN', name: document.getElementById('cust-name').value }); }
+        function showWait(id, code) { 
+            document.getElementById('step-join').classList.add('hidden'); 
             document.getElementById('step-wait').classList.remove('hidden');
             document.getElementById('my-token').innerText = id;
-            document.getElementById('my-code').innerText = code || "----";
+            document.getElementById('my-code').innerText = code;
         }
-
-        function showThankYou() {
-            document.getElementById('step-wait').classList.add('hidden');
-            document.getElementById('cust-card-container').classList.remove('state-your-turn');
-            document.getElementById('step-thanks').classList.remove('hidden');
-            localStorage.removeItem('qflow_id');
-            localStorage.removeItem('qflow_code');
-        }
-
-        function exitQueue() {
-            if(confirm("Quit queue and start over?")) {
-                localStorage.removeItem('qflow_id');
-                localStorage.removeItem('qflow_code');
-                resetToJoin();
-            }
-        }
-
-        function resetToJoin() {
-            document.getElementById('step-wait').classList.add('hidden');
+        function showThanks() { document.getElementById('step-wait').classList.add('hidden'); document.getElementById('step-thanks').classList.remove('hidden'); }
+        function exitQueue() { localStorage.removeItem('qflow_id'); resetToJoin(); }
+        function resetToJoin() { 
+            document.getElementById('step-wait').classList.add('hidden'); 
             document.getElementById('step-thanks').classList.add('hidden');
             document.getElementById('step-join').classList.remove('hidden');
-            document.getElementById('cust-card-container').classList.remove('state-your-turn');
-            document.getElementById('cust-name').value = "";
         }
 
-        // --- ADMIN LOGIC ---
+        // --- ADMIN ---
         function openAdminLogin() { document.getElementById('login-modal').showModal(); }
-
         function connectAdmin() {
             const id = document.getElementById('target-id').value.toUpperCase();
-            const pin = document.getElementById('target-pin').value;
             window.ctrName = document.getElementById('ctr-name').value;
-            let loggedIn = false;
-
             peer = new Peer();
-            peer.on('error', err => alert("Connection Failed"));
             peer.on('open', () => {
                 conn = peer.connect(id);
-                conn.on('close', () => location.reload());
-                conn.on('open', () => conn.send({type: 'LOGIN', pin: pin}));
-                
+                conn.on('open', () => conn.send({type: 'LOGIN', pin: document.getElementById('target-pin').value}));
                 conn.on('data', d => {
                     if(d.type === 'LOGIN_OK') {
-                        loggedIn = true;
                         document.getElementById('login-modal').close();
                         document.querySelectorAll('main').forEach(el => el.classList.add('hidden'));
                         document.getElementById('admin-ui').classList.remove('hidden');
                     }
-                    if(d.type === 'LOGIN_FAIL') alert("Wrong PIN");
-                    
-                    if(d.type === 'UPDATE' && loggedIn) {
+                    if(d.type === 'UPDATE') {
                         document.getElementById('admin-wait').innerText = d.state.queue.length;
                         document.getElementById('btn-next').disabled = (d.state.queue.length === 0);
-
+                        
                         if(d.state.current) {
                             document.getElementById('admin-curr').innerText = d.state.current.id;
-                            // Show Security Code for Admin
-                            document.getElementById('admin-security-box').classList.remove('hidden');
-                            document.getElementById('admin-sec-code').innerText = d.state.current.code || '----';
-                        } else {
-                            document.getElementById('admin-curr').innerText = "--";
-                            document.getElementById('admin-security-box').classList.add('hidden');
+                            document.getElementById('admin-sec-box').classList.remove('hidden');
+                            document.getElementById('admin-sec-code').innerText = d.state.current.code;
+                        }
+                        if(d.stats) {
+                            document.getElementById('stat-served').innerText = d.stats.total;
+                            document.getElementById('stat-avg').innerText = d.stats.avg + "m";
                         }
                     }
                 });
             });
         }
-
         function send(type) { conn.send({ type: type, counter: window.ctrName }); }
+        function changeLang() { conn.send({ type: 'LANG', val: document.getElementById('lang-select').value }); }
 
-        window.onload = () => {
-            const url = new URLSearchParams(window.location.search);
-            if(url.get('id')) initCustomer(url.get('id'));
-        }
+        window.onload = () => { if(new URLSearchParams(window.location.search).get('id')) initCustomer(new URLSearchParams(window.location.search).get('id')); }
     </script>
 </body>
 </html>
